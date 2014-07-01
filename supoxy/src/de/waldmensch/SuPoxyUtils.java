@@ -59,31 +59,5 @@ public class SuPoxyUtils {
 		}
 		return out.toString();
 	}
-	
-	public static void ParsePageData(String pagedata){
-		try {
-			Document sourceDoc = stringToDocument(pagedata);
-			Element searchedTag = sourceDoc.getElementById("__dataFromCsharpSelfConsumptionRecommendation");
-			String[] rawdata = searchedTag.getAttribute("value").toString().split(";");
-			
-			SuPoxyServer.ExpectedValues.clear();
-			
-			for( int i = 0; i < rawdata.length; i ++) {
-				if(rawdata[i].startsWith("estimatedPv")){
-					String[] keyvaluepair = rawdata[i].split(":");
-					SuPoxyServer.ExpectedValues.put(keyvaluepair[0].replace("estimatedPv", ""), keyvaluepair[1]);
-				}
-			}
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-    public static Document stringToDocument(String htmlString) throws Exception {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return builder.parse(new InputSource(new StringReader(htmlString)));
-    }
 
 }

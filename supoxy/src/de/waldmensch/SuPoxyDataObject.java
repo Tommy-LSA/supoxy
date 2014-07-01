@@ -41,10 +41,9 @@ public class SuPoxyDataObject {
 			ErrorMessages = new String[errors.size()];
 			for (int i = 0; i < errors.size(); i++){
 				ErrorMessages[i] = errors.get(i).toString();
+				System.out.println("Got Errormessage: " + ErrorMessages[i]);
 			}
 		}
-
-
 
 	}
 
