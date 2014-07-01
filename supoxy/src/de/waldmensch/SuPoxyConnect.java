@@ -3,6 +3,7 @@ package de.waldmensch;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.Consts;
@@ -21,6 +22,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.parser.ParseException;
 
+import sun.util.calendar.BaseCalendar.Date;
+
 public class SuPoxyConnect extends Thread {
 
     /** Sunny Portal address */
@@ -29,6 +32,8 @@ public class SuPoxyConnect extends Thread {
     private static final String LOGIN         = HOST + "/Templates/Start.aspx";
     /** Path to LiveData JSON */
     private static final String LIVEDATA_JSON = HOST + "/homemanager";
+    /** Path to LiveData */
+    private static final String LIVEDATA = "/FixedPages/HoManLive.aspx";
     
     public static Boolean stop_Thread = false;
 
@@ -88,7 +93,19 @@ public class SuPoxyConnect extends Thread {
     	
     	System.out.println("SuPoxy try to log in");
     	login(httpclient);
+      
+    	/*
+    	try {
+    		
+			getLiveDataPage(httpclient);
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
+    	 */
+    	
     	// enter the endless loop
     	while (!stop_Thread) {
 
@@ -125,6 +142,14 @@ public class SuPoxyConnect extends Thread {
     	SuPoxyServer.SunnyList.add(data);
 
     }
+    
+    private static void getLiveDataPage(CloseableHttpClient httpclient) throws IOException, ClientProtocolException, FileNotFoundException, IllegalStateException, ParseException {
+    	HttpGet get = new HttpGet(LIVEDATA);
+    	CloseableHttpResponse response = httpclient.execute(get);
+    	HttpEntity entity = response.getEntity();
+    	
+    	SuPoxyUtils.ParsePageData(SuPoxyUtils.fromStream(entity.getContent()));
+    }
 
     private static void login(CloseableHttpClient httpclient) throws IOException, ClientProtocolException {
         HttpPost httpost = new HttpPost(LOGIN);
@@ -137,4 +162,7 @@ public class SuPoxyConnect extends Thread {
         HttpEntity entity = response.getEntity();
         EntityUtils.consume(entity);
     }
+    
+
+    
 }

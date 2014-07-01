@@ -6,6 +6,9 @@ import java.net.InetSocketAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -15,6 +18,8 @@ import com.sun.net.httpserver.HttpServer;
 public class SuPoxyServer {
 
 	public static ArrayList<SuPoxyDataObject> SunnyList;
+	public static Map<String, String> ExpectedValues;
+	
 	/**
 	 * @param args
 	 */
@@ -31,6 +36,7 @@ public class SuPoxyServer {
 		if(SuPoxySettings.configOK){
 
 			SunnyList = new ArrayList<SuPoxyDataObject>();
+			ExpectedValues = new HashMap<String, String>();
 			//SunnyPortal.WebConnect(SunnyList);
 			new SuPoxyConnect("PortalConnector").start();
 
@@ -79,7 +85,7 @@ public class SuPoxyServer {
 				sw.write("BO:" + data.getBatteryOut() + "\t");
 				sw.write("BCS:" + data.getBatteryChargeStatus() + "\t");
 				sw.write("BSH:" + data.getBatteryStateOfHealth() + "\t");
-
+				
 				if (data.getErrorMessages().length > 0)
 					sw.write("ERROR:" + data.getErrorMessages()[0] + "\t");
 				else
@@ -125,7 +131,19 @@ public class SuPoxyServer {
 			sw.write("BO:" + data.getBatteryOut() + "\t");
 			sw.write("BCS:" + data.getBatteryChargeStatus() + "\t");
 			sw.write("BSH:" + data.getBatteryStateOfHealth() + "\t");
+			
+			/*
+			Calendar cal = Calendar.getInstance();
+	        SimpleDateFormat ft =  new SimpleDateFormat ("H");
+	        if(ExpectedValues.containsKey(ft.format(cal))){
+	        	int PVE = Integer.parseInt(ExpectedValues.get(ft.format(cal)));
+	        	sw.write("PVE:" + PVE * 1000 + "\t");
+	        } else {
+	        	sw.write("PVE:");
+	        }
 
+			*/
+			
 			if (data.getErrorMessages().length > 0)
 				sw.write("ERROR:" + data.getErrorMessages()[0] + "\t");
 			else
