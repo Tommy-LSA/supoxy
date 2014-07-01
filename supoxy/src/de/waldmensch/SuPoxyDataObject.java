@@ -36,7 +36,7 @@ public class SuPoxyDataObject {
 		OperationHealth = Integer.parseInt( SuPoxyUtils.chkStringForNull(json.get("OperationHealth")));
 		BatteryStateOfHealth = Integer.parseInt( SuPoxyUtils.chkStringForNull(json.get("BatteryStateOfHealth")));
 		errors = (JSONArray)json.get("ErrorMessages");
-		
+
 		if (errors.size() > 0){
 			ErrorMessages = new String[errors.size()];
 			for (int i = 0; i < errors.size(); i++){
@@ -44,10 +44,10 @@ public class SuPoxyDataObject {
 			}
 		}
 
-			
-			
+
+
 	}
-	
+
 	private Date Timestamp;
 	private Integer PV;
 	private Integer FeedIn;
@@ -66,7 +66,7 @@ public class SuPoxyDataObject {
 	private Integer BatteryStateOfHealth;
 	private String[] ErrorMessages = new String[0];
 	private JSONArray errors;
-	
+
 	public String[] getErrorMessages() {
 		return ErrorMessages;
 	}

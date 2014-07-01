@@ -33,40 +33,47 @@ public class SuPoxyConnect extends Thread {
     public static Boolean stop_Thread = false;
 
     
-    /* JSON delivert from Sunny Portal
+    /* JSON example delivered from Sunny Portal
      {
-    "Timestamp": "/Date(1403729740909)/",
-    "PV": 57,
-    "FeedIn": 0,
-    "GridConsumption": 996,
-    "DirectConsumption": null,
-    "SelfConsumption": 57,
-    "SelfSupply": 57,
-    "TotalConsumption": 1053,
-    "DirectConsumptionQuote": null,
-    "SelfConsumptionQuote": 100,
-    "AutarkyQuote": 5,
-    "BatteryIn": null,
-    "BatteryOut": null,
-    "BatteryChargeStatus": null,
-    "OperationHealth": null,
-    "BatteryStateOfHealth": null,
-    "InfoMessages": [],
-    "WarningMessages": [],
-    "ErrorMessages": [],
-    "Info": {}
-}
-     */
+	    "Timestamp": "/Date(1403729740909)/",
+	    "PV": 57,
+	    "FeedIn": 0,
+	    "GridConsumption": 996,
+	    "DirectConsumption": null,
+	    "SelfConsumption": 57,
+	    "SelfSupply": 57,
+	    "TotalConsumption": 1053,
+	    "DirectConsumptionQuote": null,
+	    "SelfConsumptionQuote": 100,
+	    "AutarkyQuote": 5,
+	    "BatteryIn": null,
+	    "BatteryOut": null,
+	    "BatteryChargeStatus": null,
+	    "OperationHealth": null,
+	    "BatteryStateOfHealth": null,
+	    "InfoMessages": [],
+	    "WarningMessages": [],
+	    "ErrorMessages": [],
+	    "Info": {}
+	}
+    */
+    
     public SuPoxyConnect(String str) {
         super(str);
     }
+    
     public void run(){
     	try {
+    		
 			WebConnect();
+			
 		} catch (IllegalStateException | IOException | InterruptedException e) {
+			
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
+    	
         System.out.println("DONE! " + getName());
     }
 
@@ -79,17 +86,23 @@ public class SuPoxyConnect extends Thread {
     			.setUserAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36")
     			.build();
     	
-    	System.out.println("Login");
+    	System.out.println("SuPoxy try to log in");
     	login(httpclient);
 
+    	// enter the endless loop
     	while (!stop_Thread) {
 
     		try {
+    			
     			getLiveData(httpclient);
+    			
     		} catch (ParseException e) {
+    			
+    			// if we have a parse error it could be that we got the login page instead of JSON
     			System.out.println("JSON parse error - try re-login...");
     			login(httpclient);
     			System.out.println("JSON parse error - re-login done");
+    			
     		}
 
     		Thread.sleep(SuPoxySettings.requestinterval * 1000);
@@ -104,25 +117,12 @@ public class SuPoxyConnect extends Thread {
 
     	SuPoxyDataObject data = new SuPoxyDataObject(SuPoxyUtils.fromStream(entity.getContent()));
     	
+    	// if the cache is full we delete the first (oldest) entry before adding a new one
     	while (SuPoxyServer.SunnyList.size() > SuPoxySettings.cachesize){
     		SuPoxyServer.SunnyList.remove(0);
     	}
+    	
     	SuPoxyServer.SunnyList.add(data);
-
-    	/*
-    	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    	String reportDate = df.format(data.getTimestamp());
-
-    	StringWriter sw = new StringWriter();
-    	sw.write(reportDate + "\t");
-    	sw.write("PV:" + data.getPV() + "\t");
-    	sw.write("FI:" + data.getFeedIn() + "\t");
-    	sw.write("SC:" + data.getSelfConsumption() + "\t");
-    	sw.write("GC:" + data.getGridConsumption() + "\t");
-    	sw.write("TC:" + data.getTotalConsumption() + "\t");
-    	sw.write("SS:" + data.getSelfSupply() + "\t");
-    	System.out.println(sw.toString());
-    	 */
 
     }
 

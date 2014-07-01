@@ -8,7 +8,7 @@ import java.util.Properties;
 
 
 public class SuPoxySettings {
-	
+
 	/* Default Values Begin*/
 	public static Integer requestinterval_default = 5;
 	public static Integer httpport_default = 8000;
@@ -40,13 +40,13 @@ public class SuPoxySettings {
 		try {
 			properties.load(stream);
 			stream.close();
-			
+
 			sunnyuser = properties.getProperty("sunnyuser");
 			sunnypassword = properties.getProperty("sunnypassword");
 			requestinterval = SuPoxyUtils.IntParser("requestinterval",properties.getProperty("requestinterval"), requestinterval_default);
 			httpport = SuPoxyUtils.IntParser("httpport", properties.getProperty("httpport"), httpport_default);
 			cachesize = SuPoxyUtils.IntParser("cachesize", properties.getProperty("cachesize"), cachesize_default);
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			configOK = false;
@@ -55,10 +55,10 @@ public class SuPoxySettings {
 
 		// no less than 5!
 		requestinterval = (requestinterval < 5) ? requestinterval : 5;
-		
+
 		// without user/pw we are not able to get data
 		configOK = (sunnyuser.length() > 0 && sunnypassword.length() > 0) ? true : false;
-		
+
 	}
 
 }

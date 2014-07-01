@@ -39,17 +39,17 @@ public class SuPoxyUtils {
 		}
 	}
 
-    public static String fromStream(InputStream in) throws IOException
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder out = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        String line;
-        while ((line = reader.readLine()) != null) {
-            out.append(line);
-            out.append(newLine);
-        }
-        return out.toString();
-    }
+	public static String fromStream(InputStream in) throws IOException
+	{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		StringBuilder out = new StringBuilder();
+		String newLine = System.getProperty("line.separator");
+		String line;
+		while ((line = reader.readLine()) != null) {
+			out.append(line);
+			out.append(newLine);
+		}
+		return out.toString();
+	}
 
 }
