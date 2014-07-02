@@ -88,6 +88,7 @@ public class SuPoxyConnect extends Thread {
 
 		System.out.println("SuPoxy try to log in");
 		login(httpclient);
+		System.out.println("SuPoxy login done");
 
 		// enter the endless loop
 		while (!stop_Thread) {

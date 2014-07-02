@@ -33,6 +33,7 @@ public class SuPoxyServer {
 
 			SunnyList = new ArrayList<SuPoxyDataObject>();
 			new SuPoxyConnect("PortalConnector").start();
+			System.out.println("API Thread started");
 
 			HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 			server.createContext("/history", new SendHistory());
