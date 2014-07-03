@@ -11,6 +11,7 @@ public class SuPoxyDataObject {
 
 	public SuPoxyDataObject(String JSONString) throws ParseException {
 
+		JSONRaw = JSONString;
 		JSONObject json;
 		//System.out.println(JSONString);
 		json = (JSONObject) new JSONParser().parse(JSONString);
@@ -65,7 +66,15 @@ public class SuPoxyDataObject {
 	private Integer BatteryStateOfHealth;
 	private String[] ErrorMessages = new String[0];
 	private JSONArray errors;
+	private String JSONRaw;
 
+	public String getJSONRaw() {
+		return JSONRaw;
+	}
+	public void setJSONRaw(String jSONRaw) {
+		JSONRaw = jSONRaw;
+	}
+	
 	public String[] getErrorMessages() {
 		return ErrorMessages;
 	}

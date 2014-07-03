@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -38,6 +39,7 @@ public class SuPoxyServer {
 			HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 			server.createContext("/history", new SendHistory());
 			server.createContext("/actual", new SendActual());
+			server.createContext("/raw", new SendRaw());
 			server.setExecutor(null); // creates a default executor
 			server.start();
 			System.out.println("SuPoxy is running at  "+ SuPoxySettings.httpport);
@@ -134,6 +136,31 @@ public class SuPoxyServer {
 			sw.write("\n");
 
 			String response = sw.toString();
+			t.sendResponseHeaders(200, response.length());
+			OutputStream os = t.getResponseBody();
+			os.write(response.getBytes());
+			os.close();
+		}
+	}
+
+	/**
+	 * 
+	 * This function responds only with the last (newest) record in ArrayList as 
+	 * Raw JSON String
+	 */
+	static class SendRaw implements HttpHandler {
+		public void handle(HttpExchange t) throws IOException {
+
+			StringWriter sw = new StringWriter();
+
+			SuPoxyDataObject data = SunnyList.get(SunnyList.size()-1);
+
+			sw.write(data.getJSONRaw());
+			String response = sw.toString();
+
+			Headers h = t.getResponseHeaders();
+			h.set("Content-Type","application/json");
+
 			t.sendResponseHeaders(200, response.length());
 			OutputStream os = t.getResponseBody();
 			os.write(response.getBytes());
