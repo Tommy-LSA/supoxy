@@ -34,7 +34,7 @@ public class SuPoxyServer {
 
 			SunnyList = new ArrayList<SuPoxyDataObject>();
 			new SuPoxyConnect("PortalConnector").start();
-			System.out.println("API Thread started");
+			SuPoxyUtils.log("API Thread started");
 
 			HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 			server.createContext("/history", new SendHistory());
@@ -42,11 +42,11 @@ public class SuPoxyServer {
 			server.createContext("/raw", new SendRaw());
 			server.setExecutor(null); // creates a default executor
 			server.start();
-			System.out.println("SuPoxy is running at  "+ SuPoxySettings.httpport);
+			SuPoxyUtils.log("SuPoxy is running at  "+ SuPoxySettings.httpport);
 
 		} else {
 
-			System.out.println("SuPoxy is dead (config error)");
+			SuPoxyUtils.log("SuPoxy is dead (config error)");
 
 		}
 
