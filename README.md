@@ -9,8 +9,8 @@ INSTALL
 =======
 1. Place the Files from "Distribution" Directory in an accessible path (eg /opt/fhem/suproxy)
 2. Edit sunny.conf and add your credentials
-3. call the jar from yourt Installdir with something like <br> 
-``` java -Djava.library.path=./SuPoxy_lib -jar SuPoxy.jar sunny.conf >> /var/log/supoxy.log ```
+3. call the jar from your Installdir with something like <br> 
+``` java -Djava.library.path=./SuPoxy_lib -jar SuPoxy.jar sunny.conf >> /var/log/supoxy.log & ```
 
 RUNNING
 =======
