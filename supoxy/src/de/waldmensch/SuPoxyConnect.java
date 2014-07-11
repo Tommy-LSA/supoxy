@@ -121,6 +121,17 @@ public class SuPoxyConnect extends Thread {
 
 			SuPoxyDataObject data;
 			data = new SuPoxyDataObject(SuPoxyUtils.fromStream(entity.getContent()));
+			
+			// handle Portal errors
+			if(data.getErrorMessages().length > 0){
+				
+				// Session expired - re-login
+				if(data.getErrorMessages()[0].contains("Your session has expired. Please login again")){
+					login(httpclient);
+				}
+				
+			}
+
 			// if the cache is full we delete the first (oldest) entry before adding a new one
 			while (SuPoxyServer.SunnyList.size() > SuPoxySettings.cachesize){
 				SuPoxyServer.SunnyList.remove(0);
@@ -147,6 +158,7 @@ public class SuPoxyConnect extends Thread {
 			CloseableHttpResponse response = httpclient.execute(httpost);
 			HttpEntity entity = response.getEntity();
 			EntityUtils.consume(entity);
+			SuPoxyUtils.log("login done");
 
 		} catch (ClientProtocolException eIO) {
 			SuPoxyUtils.log("login ClientProtocolException");
