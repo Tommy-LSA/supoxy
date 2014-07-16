@@ -27,7 +27,7 @@ public class SuPoxyUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-		cal.add(Calendar.HOUR, -2);
+		cal.add(Calendar.HOUR, SuPoxySettings.timecorrection);
 
 		return cal.getTime();
 	}
