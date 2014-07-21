@@ -9,12 +9,12 @@ INSTALL
 =======
 1. Place the Files from "Distribution" Directory in an accessible path (eg /opt/fhem/suproxy)
 2. Edit sunny.conf and add your credentials
-3. call the jar from your Installdir with something like <br> 
-``` java -Djava.library.path=./SuPoxy_lib -jar SuPoxy.jar sunny.conf >> /var/log/supoxy.log & ```
+3. Edit the file "config" from the Distribution directory
+4. use "supoxy.sh" from the samew path to start and stop. This is an init.d-Style script which can also be used in /etc/init.d/
 
 RUNNING
 =======
-The suproxy listens as a small webserver to port 8000 (changeable in sunny.conf)
+supoxy listens as a small webserver to port 8000 (changeable in sunny.conf)
 
 ``` http://localhost:8000/actual ```
 returns actual values delivered by portal
