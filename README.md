@@ -3,14 +3,15 @@ supoxy
 
 Proxy Server for Sunny Portal
 
-Reads the JSON Values from SMA Sunny Portal and presents them formatted or Raw
+Reads the JSON Values from SMA Sunny Portal and presents them formatted or Raw. 
+It can be used in conjunction with FHEM to display your own statistic about your photovoltaic.
 
 INSTALL
 =======
 1. Place the Files from "Distribution" Directory in an accessible path (eg /opt/fhem/suproxy)
 2. Edit sunny.conf and add your credentials
-3. Edit the file "config" from the Distribution directory
-4. use "supoxy.sh" from the samew path to start and stop. This is an init.d-Style script which can also be used in /etc/init.d/
+3. Edit the file "supoxy_init_config" from the Distribution directory
+4. use "supoxy-init.sh" from the same path to start and stop. This is an init.d-style script which can also be used in /etc/init.d/
 
 RUNNING
 =======
