@@ -74,10 +74,10 @@ public class SuPoxyConnect extends Thread {
 
 		}
 
-		System.out.println("DONE! " + getName());
+		SuPoxyUtils.log("WebConnect Thread ended " + getName());
 	}
 
-	public static void WebConnect() throws ClientProtocolException, IOException, IllegalStateException, InterruptedException {
+	public static void WebConnect() throws IOException, IllegalStateException, InterruptedException {
 
 		BasicCookieStore cookieStore = new BasicCookieStore();
 		CloseableHttpClient httpclient = HttpClients.custom()
@@ -86,9 +86,9 @@ public class SuPoxyConnect extends Thread {
 				.setUserAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36")
 				.build();
 
-		System.out.println("SuPoxy try to log in");
+		SuPoxyUtils.log("SuPoxy try to log in");
 		login(httpclient);
-		System.out.println("SuPoxy login done");
+		SuPoxyUtils.log("SuPoxy login done");
 
 		// enter the endless loop
 		while (!stop_Thread) {
@@ -100,9 +100,9 @@ public class SuPoxyConnect extends Thread {
 			} catch (ParseException e) {
 
 				// if we have a parse error it could be that we got the login page instead of JSON
-				System.out.println("JSON parse error - try re-login...");
+				SuPoxyUtils.log("JSON parse error - try re-login...");
 				login(httpclient);
-				System.out.println("JSON parse error - re-login done");
+				SuPoxyUtils.log("JSON parse error - re-login done");
 
 			}
 
@@ -111,32 +111,60 @@ public class SuPoxyConnect extends Thread {
 		}
 	}
 
-	private static void getLiveData(CloseableHttpClient httpclient) throws IOException, ClientProtocolException, FileNotFoundException, IllegalStateException, ParseException {
+	private static void getLiveData(CloseableHttpClient httpclient) throws FileNotFoundException, IllegalStateException, ParseException {
 		HttpGet get = new HttpGet(LIVEDATA_JSON);
-		CloseableHttpResponse response = httpclient.execute(get);
-		HttpEntity entity = response.getEntity();
+		CloseableHttpResponse response;
 
-		SuPoxyDataObject data = new SuPoxyDataObject(SuPoxyUtils.fromStream(entity.getContent()));
+		try {
+			response = httpclient.execute(get);
+			HttpEntity entity = response.getEntity();
 
-		// if the cache is full we delete the first (oldest) entry before adding a new one
-		while (SuPoxyServer.SunnyList.size() > SuPoxySettings.cachesize){
-			SuPoxyServer.SunnyList.remove(0);
+			SuPoxyDataObject data;
+			data = new SuPoxyDataObject(SuPoxyUtils.fromStream(entity.getContent()));
+			
+			// handle Portal errors
+			if(data.getErrorMessages().length > 0){
+				
+				// Session expired - re-login
+				if(data.getErrorMessages()[0].contains("Your session has expired. Please login again")){
+					login(httpclient);
+				}
+				
+			}
+
+			// if the cache is full we delete the first (oldest) entry before adding a new one
+			while (SuPoxyServer.SunnyList.size() > SuPoxySettings.cachesize){
+				SuPoxyServer.SunnyList.remove(0);
+			}
+			SuPoxyServer.SunnyList.add(data);
+
+		} catch (ClientProtocolException eIO) {
+			SuPoxyUtils.log("getLiveData ClientProtocolException");
+		} catch (IOException eIO) {
+			SuPoxyUtils.log("getLiveData IO Error");
 		}
-
-		SuPoxyServer.SunnyList.add(data);
 
 	}
 
-	private static void login(CloseableHttpClient httpclient) throws IOException, ClientProtocolException {
+	private static void login(CloseableHttpClient httpclient) {
 		HttpPost httpost = new HttpPost(LOGIN);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("ctl00$ContentPlaceHolder1$Logincontrol1$txtUserName", SuPoxySettings.sunnyuser));
 		nvps.add(new BasicNameValuePair("ctl00$ContentPlaceHolder1$Logincontrol1$txtPassword", SuPoxySettings.sunnypassword));
 		nvps.add(new BasicNameValuePair("__EVENTTARGET", "ctl00$ContentPlaceHolder1$Logincontrol1$LoginBtn"));
 		httpost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
-		CloseableHttpResponse response = httpclient.execute(httpost);
-		HttpEntity entity = response.getEntity();
-		EntityUtils.consume(entity);
+		try {
+
+			CloseableHttpResponse response = httpclient.execute(httpost);
+			HttpEntity entity = response.getEntity();
+			EntityUtils.consume(entity);
+			SuPoxyUtils.log("login done");
+
+		} catch (ClientProtocolException eIO) {
+			SuPoxyUtils.log("login ClientProtocolException");
+		} catch (IOException eIO) {
+			SuPoxyUtils.log("login IO Error");
+		}
 	}
 
 

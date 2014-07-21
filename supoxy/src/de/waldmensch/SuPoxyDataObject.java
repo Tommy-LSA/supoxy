@@ -13,7 +13,7 @@ public class SuPoxyDataObject {
 
 		JSONRaw = JSONString;
 		JSONObject json;
-		//System.out.println(JSONString);
+		//SuPoxyUtils.log(JSONString);
 		json = (JSONObject) new JSONParser().parse(JSONString);
 
 		if(json.get("Timestamp") != null)
@@ -42,7 +42,7 @@ public class SuPoxyDataObject {
 			ErrorMessages = new String[errors.size()];
 			for (int i = 0; i < errors.size(); i++){
 				ErrorMessages[i] = errors.get(i).toString();
-				System.out.println("Got Errormessage: " + ErrorMessages[i]);
+				SuPoxyUtils.log("Got Errormessage: " + ErrorMessages[i]);
 			}
 		}
 

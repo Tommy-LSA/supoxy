@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -25,7 +27,7 @@ public class SuPoxyUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-		cal.add(Calendar.HOUR, -2);
+		cal.add(Calendar.HOUR, SuPoxySettings.timecorrection);
 
 		return cal.getTime();
 	}
@@ -34,7 +36,7 @@ public class SuPoxyUtils {
 		try {
 			return Integer.parseInt(value);
 		} catch ( NumberFormatException e) {
-			System.out.println("Use default value for " + parameter + " (" + defaultvalue + ")");
+			log("Use default value for " + parameter + " (" + defaultvalue + ")");
 			return defaultvalue;
 		}
 	}
@@ -50,6 +52,13 @@ public class SuPoxyUtils {
 			out.append(newLine);
 		}
 		return out.toString();
+	}
+	
+	public static void log(String message){
+		Date date = new Date();
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		String reportDate = df.format(date);
+		System.out.println(reportDate + "\t" + message);
 	}
 
 }

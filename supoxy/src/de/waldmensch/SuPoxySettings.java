@@ -13,6 +13,7 @@ public class SuPoxySettings {
 	public static Integer requestinterval_default = 5;
 	public static Integer httpport_default = 8000;
 	public static Integer cachesize_default = 500;
+	public static Integer timecorrection_default = 0;
 	/* Default Values End*/
 
 	public static Boolean configOK;
@@ -23,6 +24,7 @@ public class SuPoxySettings {
 	public static Integer requestinterval;
 	public static Integer httpport;
 	public static Integer cachesize;
+	public static Integer timecorrection;
 
 	public static void LoadConfig(String configpath){
 
@@ -46,6 +48,7 @@ public class SuPoxySettings {
 			requestinterval = SuPoxyUtils.IntParser("requestinterval",properties.getProperty("requestinterval"), requestinterval_default);
 			httpport = SuPoxyUtils.IntParser("httpport", properties.getProperty("httpport"), httpport_default);
 			cachesize = SuPoxyUtils.IntParser("cachesize", properties.getProperty("cachesize"), cachesize_default);
+			timecorrection = SuPoxyUtils.IntParser("timecorrection", properties.getProperty("timecorrection"), timecorrection_default);
 
 		} catch (IOException e) {
 			e.printStackTrace();
