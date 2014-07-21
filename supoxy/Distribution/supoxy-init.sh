@@ -13,23 +13,22 @@
 # Description:    Init script for supoxy server, a proxy Server to SunnyPortal from SMA; with rolling logs
 ### END INIT INFO
 
-# Created by Regengott
-
-# Based on https://github.com/Ahtenus/minecraft-init
+# Based on https://github.com/Ahtenus/minecraft-init - Thanx guys!
+# adapted to supoxy by ThetaGamma
 
 # Loads config file
 
 if [ -L $0 ]
 then
-	source `readlink -e $0 | sed "s:[^/]*$:config:"`
+	source `readlink -e $0 | sed "s:[^/]*$:supoxy_init_config:"`
 else
-	source `echo $0 | sed "s:[^/]*$:config:"`
+	source `echo $0 | sed "s:[^/]*$:supoxy_init_config:"`
 fi
 
 if [ "$SERVICE" == "" ]
 then
-	echo "Couldn't load config file, please edit config.example and rename it to config"
-	logger -t supoxy-init "Couldn't load config file, please edit config.example and rename it to config"
+	echo "Couldn't load config file, please edit config.example and rename it to supoxy_init_config"
+	logger -t supoxy-init "Couldn't load config file, please edit config.example and rename it to supoxy_init_config"
 	exit
 fi
 
