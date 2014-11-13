@@ -13,6 +13,13 @@ INSTALL
 3. Edit the file "supoxy_init_config" from the Distribution directory
 4. use "supoxy-init.sh" from the same path to start and stop. This is an init.d-style script which can also be used in /etc/init.d/
 
+TESTING
+=======
+Above 3. & 4. are not needed for testing
+
+1. cd to the folder
+2. start the server with java -Djava.library.path=./SuPoxy_lib -jar SuPoxy.jar sunny.conf & 
+
 RUNNING
 =======
 supoxy listens as a small webserver to port 8000 (changeable in sunny.conf)
