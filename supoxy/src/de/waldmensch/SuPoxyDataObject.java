@@ -12,6 +12,7 @@ public class SuPoxyDataObject {
 	public SuPoxyDataObject(String JSONString) throws ParseException {
 
 		JSONRaw = JSONString;
+		//SuPoxyUtils.log(JSONRaw);
 		JSONObject json;
 		//SuPoxyUtils.log(JSONString);
 		json = (JSONObject) new JSONParser().parse(JSONString);

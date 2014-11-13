@@ -2,6 +2,11 @@ package de.waldmensch;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +18,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -24,7 +32,7 @@ import org.json.simple.parser.ParseException;
 public class SuPoxyConnect extends Thread {
 
 	/** Sunny Portal address */
-	private static final String HOST          = "http://www.sunnyportal.com";
+	private static final String HOST          = "https://www.sunnyportal.com";
 	/** Login path, used for posting login data */
 	private static final String LOGIN         = HOST + "/Templates/Start.aspx";
 	/** Path to LiveData JSON */
@@ -67,7 +75,7 @@ public class SuPoxyConnect extends Thread {
 
 			WebConnect();
 
-		} catch (IllegalStateException | IOException | InterruptedException e) {
+		} catch (IllegalStateException | IOException | InterruptedException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,16 +85,29 @@ public class SuPoxyConnect extends Thread {
 		SuPoxyUtils.log("WebConnect Thread ended " + getName());
 	}
 
-	public static void WebConnect() throws IOException, IllegalStateException, InterruptedException {
+	public static void WebConnect() throws IOException, IllegalStateException, InterruptedException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+		SSLContextBuilder builder = new SSLContextBuilder();
+		
+		builder.loadTrustMaterial(null, new TrustSelfSignedStrategy(){
+			public boolean isTrusted(X509Certificate[] chain, String authType)
+					throws CertificateException {
+				return true;
+			}
+		});
+		
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build(), SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
 		BasicCookieStore cookieStore = new BasicCookieStore();
 		CloseableHttpClient httpclient = HttpClients.custom()
 				.setDefaultCookieStore(cookieStore)
+				.setSSLSocketFactory(sslsf)
 				.setRedirectStrategy(new LaxRedirectStrategy())
 				.setUserAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36")
 				.build();
 
 		SuPoxyUtils.log("SuPoxy try to log in");
+		
 		login(httpclient);
 		SuPoxyUtils.log("SuPoxy login done");
 
@@ -141,7 +162,7 @@ public class SuPoxyConnect extends Thread {
 		} catch (ClientProtocolException eIO) {
 			SuPoxyUtils.log("getLiveData ClientProtocolException");
 		} catch (IOException eIO) {
-			SuPoxyUtils.log("getLiveData IO Error");
+			SuPoxyUtils.log("getLiveData IO Error " + eIO.getMessage());
 		}
 
 	}
